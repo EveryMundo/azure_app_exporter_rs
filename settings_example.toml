@@ -1,0 +1,69 @@
+[credentials]
+tenant_id = "..."
+client_id = "..."
+client_secret = "..."
+
+[metrics]
+# If an Azure-related metric hasn't been updated within this span of time, it will be removed.
+# This can be used to remove metrics for Azure applications that no longer exist.
+# If this setting is not set, no metrics will be pruned.
+# It is recommended to set the prune_interval to at least 2x the applications cache_refresh_interval
+prune_interval = "30m"
+
+# How often to refresh the Prometheus metrics. They are not automatically refreshed each time /metrics is called
+refresh_interval = "1m"
+
+[applications]
+# Enable monitoring Azure applications
+enabled = true
+
+# How often to refresh the in-memory cache of Azure applications
+cache_refresh_interval = "15m"
+
+# The URL to the applications API.
+url = "https://graph.microsoft.com/v1.0/applications"
+
+# How many applications to include per API response page. Range is 1-999 inclusive.
+# The exporter traverses all pages to get the full response, so it is not recommended to reduce this value
+# unless you want it to make more HTTP requests than optimal to get the full list of applications.
+# This corresponds to the "$top" query parameter in https://learn.microsoft.com/en-us/graph/query-parameters#top-parameter
+results_per_page = 999
+
+[web]
+listen_address = "0.0.0.0:9081"
+
+# If no cert or key file are provided, the server will start in HTTP mode regardless of the [tls] settings
+cert_file = "./cert.pem"
+key_file = "./key.pem"
+
+[openapi]
+# Enables both the OpenAPI json docs and Swagger UI
+enabled = true
+
+# Must begin with "/"
+docs_url = "/openapi.json"
+
+# Must begin with "/"
+swagger_ui_url = "/swagger"
+
+# Allowed TLS settings. Uncomment ones you want to disable.
+[tls]
+cipher_suites = [
+    # --- TLS1.3 suites ---
+    "TLS13_AES_256_GCM_SHA384",
+    "TLS13_AES_128_GCM_SHA256",
+    "TLS13_CHACHA20_POLY1305_SHA256",
+    # --- TLS1.2 suites ---
+    "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+    "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+    "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+    "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+    "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+    "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+]
+key_exchange_groups = ["X25519", "SECP256R1", "SECP384R1"]
+protocol_versions = ["TLS13", "TLS12"]
+
+[debug]
+# Do not verify certificates when making requests to external APIs
+no_verify_tls = false
